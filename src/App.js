@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, { useState, useRef, useLayoutEffect} from "react";
 import { useForm } from "./useForm";
 import {Hello} from "./Hello";
-import { useFetch } from "./useFetch";
+import { useMeasure } from "./useMeasure";
 
 
 const App = () => {
@@ -10,17 +10,46 @@ const App = () => {
   password: "", 
   firstName: ""});
 
-  const [count, setCount] = useState(() =>
-    JSON.parse(localStorage.getItem('count'))
-    );
-  const {data,loading} = useFetch(`http://numbersapi.com/43/${count}/trivia`);
+  const inputRef = useRef();
+  const hello = useRef(() => console.log("hello"));
 
-  useEffect(() =>{
-    localStorage.setItem("count", JSON.stringify(count));
-  }, [count]);
-  
+  const [showHello, setShowHello] = useState(true);
 
-  //const [showHello, setShowHello] = useState(true);
+const [rect, inputRef2] = useMeasure([]);
+
+
+
+  return (
+  <div>
+      
+      <>
+     <button onClick={() => setShowHello(!showHello)}>toggle</button>
+     {showHello && <Hello/>}
+      <input ref={inputRef} name="email" value = {values.email} onChange = {handleChange}/>
+      <input ref={inputRef2} name="firstName" placeholder="fisrtname" value = {values.firstName} onChange = {handleChange}/>
+      <input 
+      type= "password" 
+      name="password" 
+      value = {values.password}
+      onChange = {handleChange}
+          />
+          <button onClick={() => {
+            inputRef.current.focus();
+            hello.current();
+          }}
+          >
+            focus
+            </button>
+        </>
+  </div>
+  );
+};
+
+
+//useLayoutEffect(() => {
+  //console.log(inputRef.current.getBoundingClientRect());
+//}, []);
+ 
   //const [values2, handleChange] =  useForm({firstName: "", lastName: ""});
 
   //useEffect(() => {
@@ -41,30 +70,6 @@ const App = () => {
  //useEffect(() => {
   //console.log('mount2')
 //}, [])
-
-
-  return (
-  <div>
-      <div>{!data ? "loading..." : data}</div>
-      <div>count: {count}</div>
-      <button onClick={() => setCount(c => c+1)}>increment</button>
-      <>
-     
-      <input name="email" value = {values.email} onChange = {handleChange}/>
-      <input name="firstName" placeholder="fisrtname" value = {values.firstName} onChange = {handleChange}/>
-      <input 
-      type= "password" 
-      name="password" 
-      value = {values.password}
-      onChange = {handleChange}
-          />
-        </>
-  </div>
-  );
-};
-
-
-
 
 //import logo from './logo.svg';
 //import './App.css';
